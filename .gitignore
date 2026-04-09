@@ -1,0 +1,17 @@
+# Database config (sensitive)
+config/database.php
+
+# XAMPP / PHP
+*.log
+*.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
