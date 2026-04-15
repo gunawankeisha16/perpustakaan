@@ -1,0 +1,109 @@
+db
+CREATE DATABASE db_buku;
+
+USE db_buku;
+
+CREATE TABLE buku (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kode_buku VARCHAR(20),
+    judul_buku VARCHAR(100),
+    nama_pengarang VARCHAR(100),
+    tahun_terbit INT
+);
+
+koneksi.php
+<?php
+$conn = mysqli_connect("localhost", "root", "", "db_buku");
+
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+?>
+
+index.php
+<?php
+include 'koneksi.php';
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Buku</title>
+    <style>
+        body { font-family: Arial; }
+        form { margin-bottom: 20px; }
+        input { margin: 5px; }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>FORM INPUT DATA BUKU</h2>
+
+<form method="POST" action="simpan.php">
+    <label>Kode Buku:</label><br>
+    <input type="text" name="kode_buku" required><br>
+
+    <label>Judul Buku:</label><br>
+    <input type="text" name="judul_buku" required><br>
+
+    <label>Nama Pengarang:</label><br>
+    <input type="text" name="nama_pengarang" required><br>
+
+    <label>Tahun Terbit:</label><br>
+    <input type="number" name="tahun_terbit" required><br><br>
+
+    <button type="submit">Simpan</button>
+    <button type="reset">Batal</button>
+</form>
+
+<h2>DAFTAR DATA BUKU</h2>
+
+<table>
+    <tr>
+        <th>No</th>
+        <th>Kode Buku</th>
+        <th>Judul Buku</th>
+        <th>Nama Pengarang</th>
+        <th>Tahun Terbit</th>
+    </tr>
+
+    <?php
+    $no = 1;
+    $data = mysqli_query($conn, "SELECT * FROM buku");
+
+    while ($row = mysqli_fetch_assoc($data)) {
+        echo "<tr>
+                <td>$no</td>
+                <td>{$row['kode_buku']}</td>
+                <td>{$row['judul_buku']}</td>
+                <td>{$row['nama_pengarang']}</td>
+                <td>{$row['tahun_terbit']}</td>
+              </tr>";
+        $no++;
+    }
+    ?>
+</table>
+
+</body>
+</html>
+
+simpan.php
+<?php
+include 'koneksi.php';
+
+$kode = $_POST['kode_buku'];
+$judul = $_POST['judul_buku'];
+$pengarang = $_POST['nama_pengarang'];
+$tahun = $_POST['tahun_terbit'];
+
+mysqli_query($conn, "INSERT INTO buku 
+    (kode_buku, judul_buku, nama_pengarang, tahun_terbit)
+    VALUES ('$kode', '$judul', '$pengarang', '$tahun')");
+
+header("Location: index.php");
+?>
